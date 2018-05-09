@@ -2,26 +2,76 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
+using System.Data;
+using Mono.Data.Sqlite;
+using System.Data.SqlClient;
 
-public class SoruGelme : MonoBehaviour {
 
+public class SoruGelme : MonoBehaviour 
+{
+	public GameObject model;
+	string[] OyuncuCevap = new string[100];
+	public int i=0;
+	public Text Asıkkı, Bsıkkı, Csıkkı;
+	public Text SoruPaneli;
+	private string connectionString;
 	public GameObject panel;
 	public GameObject ks1,ks2,ks3,ks4,ks5,ks6,ks7,ks8,ks9,ks10,ks11,ks12,ks13,ks14,ks15,ks16,ks17,ks18;
 	public GameObject s1a,s1b,s1c,s2a,s2b,s2c,s3a,s3b,s3c,s4a,s4b,s4c,s5a,s5b,s5c,s6a,s6b,s6c,s7a,s7b,s7c,s8a,s8b,s8c,s9a,s9b,s9c,s10a,s10b,s10c,
 	s11a,s11b,s11c,s12a,s12b,s12c,s13a,s13b,s13c,s14a,s14b,s14c,s15a,s15b,s15c,s16a,s16b,s16c,s17a,s17b,s17c,s18a,s18b,s18c;
 
 	// Use this for initialization
-	public void Start () { 
-			panel.gameObject.SetActive (false);
+	public void Start () 
+	{ 
+		Debug.Log("bağlantı kurulacak");
+		connectionString = "URI=file:" + Application.dataPath + "/EgitimLabirenti.db";
+		panel.gameObject.SetActive (false);
 	}
 
 	// Update is called once per frame
 	void Update () {
 		
 	}
-
+		
 	public void panelkapatmaAplaneaçma()
 	{
+		
+		OyuncuCevap[i]= Asıkkı.text;
+		Debug.Log (OyuncuCevap [i]);
+		i++;
+
+		using (IDbConnection dbConnection = new SqliteConnection (connectionString)) 
+		{
+			dbConnection.Open();
+			Debug.Log("bağlantı kuruldu");
+			using (IDbCommand dbCmd = dbConnection.CreateCommand())
+			{
+				string sqlQuery = "SELECT * FROM EgitimLabirenti where Soruid=1";
+
+				dbCmd.CommandText = sqlQuery;
+
+				using (IDataReader reader = dbCmd.ExecuteReader())
+				{
+					Debug.Log("veriler okunuyor");
+					while (reader.Read())
+					{
+						Debug.Log("Veriler okundu");
+						/* Debug.Log(reader.GetString(1) + "-" + reader.GetString(5)); */
+						SoruPaneli.text = reader.GetString (1);
+						Asıkkı.text =reader.GetString(2);
+						Bsıkkı.text = reader.GetString (3);
+						Csıkkı.text = reader.GetString (4);
+
+					}
+					reader.Close();
+				}
+			}
+			dbConnection.Close ();
+
+		}
+
+
 		panel.gameObject.SetActive (false);
 		s1a.gameObject.SetActive (false);
 		s2a.gameObject.SetActive (false);
@@ -44,7 +94,11 @@ public class SoruGelme : MonoBehaviour {
 	}
 
 	public void panelkapatmaBplaneaçma()
-	{
+	{	
+		OyuncuCevap[i]= Bsıkkı.text;
+		Debug.Log (OyuncuCevap [i]);
+		i++;
+
 		panel.gameObject.SetActive (false);
 		s1b.gameObject.SetActive (false);
 		s2b.gameObject.SetActive (false);
@@ -68,6 +122,9 @@ public class SoruGelme : MonoBehaviour {
 
 	public void panelkapatmaCplaneaçma()
 	{
+		OyuncuCevap[i]= Csıkkı.text;
+		Debug.Log (OyuncuCevap [i]);
+		i++;
 		panel.gameObject.SetActive (false);
 		s1c.gameObject.SetActive (false);
 		s2c.gameObject.SetActive (false);
@@ -89,12 +146,42 @@ public class SoruGelme : MonoBehaviour {
 		s18c.gameObject.SetActive (false);
 	}
 
-	void OnCollisionEnter(Collision col)
+	void OnCollisionEnter(Collision col) /*küpe değerse */
 	{
 		if (col.gameObject.tag=="s1") 
 		{
 			panel.gameObject.SetActive (true);
-			Destroy (ks1);
+			/*Destroy (ks1); */
+			ks1.gameObject.SetActive (false); /* gizlendi */
+			using (IDbConnection dbConnection = new SqliteConnection (connectionString)) 
+			{
+				dbConnection.Open();
+				Debug.Log("bağlantı kuruldu");
+				using (IDbCommand dbCmd = dbConnection.CreateCommand())
+				{
+					string sqlQuery = "SELECT * FROM EgitimLabirenti where Soruid=1";
+
+					dbCmd.CommandText = sqlQuery;
+
+					using (IDataReader reader = dbCmd.ExecuteReader())
+					{
+						Debug.Log("veriler okunuyor");
+						while (reader.Read())
+						{
+							Debug.Log("Veriler okundu");
+							/* Debug.Log(reader.GetString(1) + "-" + reader.GetString(5)); */
+							SoruPaneli.text = reader.GetString (1);
+							Asıkkı.text =reader.GetString(2);
+							Bsıkkı.text = reader.GetString (3);
+							Csıkkı.text = reader.GetString (4);
+
+						}
+						reader.Close();
+					}
+				}
+				dbConnection.Close ();
+
+			}
 		}
 
 		if (col.gameObject.tag=="s2") 
@@ -103,7 +190,36 @@ public class SoruGelme : MonoBehaviour {
 			s2b.gameObject.SetActive (true);
 			s2c.gameObject.SetActive (true);
 			panel.gameObject.SetActive (true);
-			Destroy (ks2);
+			ks2.gameObject.SetActive (false); /* gizlendi */
+			using (IDbConnection dbConnection = new SqliteConnection (connectionString)) 
+			{
+				dbConnection.Open();
+				Debug.Log("bağlantı kuruldu");
+				using (IDbCommand dbCmd = dbConnection.CreateCommand())
+				{
+					string sqlQuery = "SELECT * FROM EgitimLabirenti where Soruid=2";
+
+					dbCmd.CommandText = sqlQuery;
+
+					using (IDataReader reader = dbCmd.ExecuteReader())
+					{
+						Debug.Log("veriler okunuyor");
+						while (reader.Read())
+						{
+							Debug.Log("Veriler okundu");
+							/* Debug.Log(reader.GetString(1) + "-" + reader.GetString(5)); */
+							SoruPaneli.text = reader.GetString (1);
+							Asıkkı.text =reader.GetString(2);
+							Bsıkkı.text = reader.GetString (3);
+							Csıkkı.text = reader.GetString (4);
+
+						}
+						reader.Close();
+					}
+				}
+				dbConnection.Close ();
+
+			}
 		}
 
 		if (col.gameObject.tag=="s3") 
@@ -112,7 +228,36 @@ public class SoruGelme : MonoBehaviour {
 			s3b.gameObject.SetActive (true);
 			s3c.gameObject.SetActive (true);
 			panel.gameObject.SetActive (true);
-			Destroy (ks3);
+			ks3.gameObject.SetActive (false); /* gizlendi */
+			using (IDbConnection dbConnection = new SqliteConnection (connectionString)) 
+			{
+				dbConnection.Open();
+				Debug.Log("bağlantı kuruldu");
+				using (IDbCommand dbCmd = dbConnection.CreateCommand())
+				{
+					string sqlQuery = "SELECT * FROM EgitimLabirenti where Soruid=3";
+
+					dbCmd.CommandText = sqlQuery;
+
+					using (IDataReader reader = dbCmd.ExecuteReader())
+					{
+						Debug.Log("veriler okunuyor");
+						while (reader.Read())
+						{
+							Debug.Log("Veriler okundu");
+							/* Debug.Log(reader.GetString(1) + "-" + reader.GetString(5)); */
+							SoruPaneli.text = reader.GetString (1);
+							Asıkkı.text =reader.GetString(2);
+							Bsıkkı.text = reader.GetString (3);
+							Csıkkı.text = reader.GetString (4);
+
+						}
+						reader.Close();
+					}
+				}
+				dbConnection.Close ();
+
+			}
 		}
 
 		if (col.gameObject.tag=="s4") 
@@ -121,7 +266,36 @@ public class SoruGelme : MonoBehaviour {
 			s4b.gameObject.SetActive (true);
 			s4c.gameObject.SetActive (true);
 			panel.gameObject.SetActive (true);
-			Destroy (ks4);
+			ks4.gameObject.SetActive (false); /* gizlendi */
+			using (IDbConnection dbConnection = new SqliteConnection (connectionString)) 
+			{
+				dbConnection.Open();
+				Debug.Log("bağlantı kuruldu");
+				using (IDbCommand dbCmd = dbConnection.CreateCommand())
+				{
+					string sqlQuery = "SELECT * FROM EgitimLabirenti where Soruid=4";
+
+					dbCmd.CommandText = sqlQuery;
+
+					using (IDataReader reader = dbCmd.ExecuteReader())
+					{
+						Debug.Log("veriler okunuyor");
+						while (reader.Read())
+						{
+							Debug.Log("Veriler okundu");
+							/* Debug.Log(reader.GetString(1) + "-" + reader.GetString(5)); */
+							SoruPaneli.text = reader.GetString (1);
+							Asıkkı.text =reader.GetString(2);
+							Bsıkkı.text = reader.GetString (3);
+							Csıkkı.text = reader.GetString (4);
+
+						}
+						reader.Close();
+					}
+				}
+				dbConnection.Close ();
+
+			}
 		}
 
 		if (col.gameObject.tag=="s5") 
@@ -130,7 +304,36 @@ public class SoruGelme : MonoBehaviour {
 			s5b.gameObject.SetActive (true);
 			s5c.gameObject.SetActive (true);
 			panel.gameObject.SetActive (true);
-			Destroy (ks5);
+			ks5.gameObject.SetActive (false); /* gizlendi */
+			using (IDbConnection dbConnection = new SqliteConnection (connectionString)) 
+			{
+				dbConnection.Open();
+				Debug.Log("bağlantı kuruldu");
+				using (IDbCommand dbCmd = dbConnection.CreateCommand())
+				{
+					string sqlQuery = "SELECT * FROM EgitimLabirenti where Soruid=5";
+
+					dbCmd.CommandText = sqlQuery;
+
+					using (IDataReader reader = dbCmd.ExecuteReader())
+					{
+						Debug.Log("veriler okunuyor");
+						while (reader.Read())
+						{
+							Debug.Log("Veriler okundu");
+							/* Debug.Log(reader.GetString(1) + "-" + reader.GetString(5)); */
+							SoruPaneli.text = reader.GetString (1);
+							Asıkkı.text =reader.GetString(2);
+							Bsıkkı.text = reader.GetString (3);
+							Csıkkı.text = reader.GetString (4);
+
+						}
+						reader.Close();
+					}
+				}
+				dbConnection.Close ();
+
+			}
 		}
 
 		if (col.gameObject.tag=="s6") 
@@ -139,7 +342,36 @@ public class SoruGelme : MonoBehaviour {
 			s6b.gameObject.SetActive (true);
 			s6c.gameObject.SetActive (true);
 			panel.gameObject.SetActive (true);
-			Destroy (ks6);
+			ks6.gameObject.SetActive (false); /* gizlendi */
+			using (IDbConnection dbConnection = new SqliteConnection (connectionString)) 
+			{
+				dbConnection.Open();
+				Debug.Log("bağlantı kuruldu");
+				using (IDbCommand dbCmd = dbConnection.CreateCommand())
+				{
+					string sqlQuery = "SELECT * FROM EgitimLabirenti where Soruid=6";
+
+					dbCmd.CommandText = sqlQuery;
+
+					using (IDataReader reader = dbCmd.ExecuteReader())
+					{
+						Debug.Log("veriler okunuyor");
+						while (reader.Read())
+						{
+							Debug.Log("Veriler okundu");
+							/* Debug.Log(reader.GetString(1) + "-" + reader.GetString(5)); */
+							SoruPaneli.text = reader.GetString (1);
+							Asıkkı.text =reader.GetString(2);
+							Bsıkkı.text = reader.GetString (3);
+							Csıkkı.text = reader.GetString (4);
+
+						}
+						reader.Close();
+					}
+				}
+				dbConnection.Close ();
+
+			}
 		}
 
 		if (col.gameObject.tag=="s7") 
@@ -148,7 +380,36 @@ public class SoruGelme : MonoBehaviour {
 			s7b.gameObject.SetActive (true);
 			s7c.gameObject.SetActive (true);
 			panel.gameObject.SetActive (true);
-			Destroy (ks7);
+			ks7.gameObject.SetActive (false); /* gizlendi */
+			using (IDbConnection dbConnection = new SqliteConnection (connectionString)) 
+			{
+				dbConnection.Open();
+				Debug.Log("bağlantı kuruldu");
+				using (IDbCommand dbCmd = dbConnection.CreateCommand())
+				{
+					string sqlQuery = "SELECT * FROM EgitimLabirenti where Soruid=7";
+
+					dbCmd.CommandText = sqlQuery;
+
+					using (IDataReader reader = dbCmd.ExecuteReader())
+					{
+						Debug.Log("veriler okunuyor");
+						while (reader.Read())
+						{
+							Debug.Log("Veriler okundu");
+							/* Debug.Log(reader.GetString(1) + "-" + reader.GetString(5)); */
+							SoruPaneli.text = reader.GetString (1);
+							Asıkkı.text =reader.GetString(2);
+							Bsıkkı.text = reader.GetString (3);
+							Csıkkı.text = reader.GetString (4);
+
+						}
+						reader.Close();
+					}
+				}
+				dbConnection.Close ();
+
+			}
 		}
 
 		if (col.gameObject.tag=="s8") 
@@ -157,7 +418,36 @@ public class SoruGelme : MonoBehaviour {
 			s8b.gameObject.SetActive (true);
 			s8c.gameObject.SetActive (true);
 			panel.gameObject.SetActive (true);
-			Destroy (ks8);
+			ks8.gameObject.SetActive (false); /* gizlendi */
+			using (IDbConnection dbConnection = new SqliteConnection (connectionString)) 
+			{
+				dbConnection.Open();
+				Debug.Log("bağlantı kuruldu");
+				using (IDbCommand dbCmd = dbConnection.CreateCommand())
+				{
+					string sqlQuery = "SELECT * FROM EgitimLabirenti where Soruid=8";
+
+					dbCmd.CommandText = sqlQuery;
+
+					using (IDataReader reader = dbCmd.ExecuteReader())
+					{
+						Debug.Log("veriler okunuyor");
+						while (reader.Read())
+						{
+							Debug.Log("Veriler okundu");
+							/* Debug.Log(reader.GetString(1) + "-" + reader.GetString(5)); */
+							SoruPaneli.text = reader.GetString (1);
+							Asıkkı.text =reader.GetString(2);
+							Bsıkkı.text = reader.GetString (3);
+							Csıkkı.text = reader.GetString (4);
+
+						}
+						reader.Close();
+					}
+				}
+				dbConnection.Close ();
+
+			}
 		}
 
 		if (col.gameObject.tag=="s9") 
@@ -166,7 +456,36 @@ public class SoruGelme : MonoBehaviour {
 			s9b.gameObject.SetActive (true);
 			s9c.gameObject.SetActive (true);
 			panel.gameObject.SetActive (true);
-			Destroy (ks9);
+			ks9.gameObject.SetActive (false); /* gizlendi */
+			using (IDbConnection dbConnection = new SqliteConnection (connectionString)) 
+			{
+				dbConnection.Open();
+				Debug.Log("bağlantı kuruldu");
+				using (IDbCommand dbCmd = dbConnection.CreateCommand())
+				{
+					string sqlQuery = "SELECT * FROM EgitimLabirenti where Soruid=9";
+
+					dbCmd.CommandText = sqlQuery;
+
+					using (IDataReader reader = dbCmd.ExecuteReader())
+					{
+						Debug.Log("veriler okunuyor");
+						while (reader.Read())
+						{
+							Debug.Log("Veriler okundu");
+							/* Debug.Log(reader.GetString(1) + "-" + reader.GetString(5)); */
+							SoruPaneli.text = reader.GetString (1);
+							Asıkkı.text =reader.GetString(2);
+							Bsıkkı.text = reader.GetString (3);
+							Csıkkı.text = reader.GetString (4);
+
+						}
+						reader.Close();
+					}
+				}
+				dbConnection.Close ();
+
+			}
 		}
 
 		if (col.gameObject.tag=="s10") 
@@ -175,7 +494,36 @@ public class SoruGelme : MonoBehaviour {
 			s10b.gameObject.SetActive (true);
 			s10c.gameObject.SetActive (true);
 			panel.gameObject.SetActive (true);
-			Destroy (ks10);
+			ks10.gameObject.SetActive (false); /* gizlendi */
+			using (IDbConnection dbConnection = new SqliteConnection (connectionString)) 
+			{
+				dbConnection.Open();
+				Debug.Log("bağlantı kuruldu");
+				using (IDbCommand dbCmd = dbConnection.CreateCommand())
+				{
+					string sqlQuery = "SELECT * FROM EgitimLabirenti where Soruid=10";
+
+					dbCmd.CommandText = sqlQuery;
+
+					using (IDataReader reader = dbCmd.ExecuteReader())
+					{
+						Debug.Log("veriler okunuyor");
+						while (reader.Read())
+						{
+							Debug.Log("Veriler okundu");
+							/* Debug.Log(reader.GetString(1) + "-" + reader.GetString(5)); */
+							SoruPaneli.text = reader.GetString (1);
+							Asıkkı.text =reader.GetString(2);
+							Bsıkkı.text = reader.GetString (3);
+							Csıkkı.text = reader.GetString (4);
+
+						}
+						reader.Close();
+					}
+				}
+				dbConnection.Close ();
+
+			}
 		}
 
 		if (col.gameObject.tag=="s11") 
@@ -184,7 +532,36 @@ public class SoruGelme : MonoBehaviour {
 			s11b.gameObject.SetActive (true);
 			s11c.gameObject.SetActive (true);
 			panel.gameObject.SetActive (true);
-			Destroy (ks11);
+			ks11.gameObject.SetActive (false); /* gizlendi */
+			using (IDbConnection dbConnection = new SqliteConnection (connectionString)) 
+			{
+				dbConnection.Open();
+				Debug.Log("bağlantı kuruldu");
+				using (IDbCommand dbCmd = dbConnection.CreateCommand())
+				{
+					string sqlQuery = "SELECT * FROM EgitimLabirenti where Soruid=11";
+
+					dbCmd.CommandText = sqlQuery;
+
+					using (IDataReader reader = dbCmd.ExecuteReader())
+					{
+						Debug.Log("veriler okunuyor");
+						while (reader.Read())
+						{
+							Debug.Log("Veriler okundu");
+							/* Debug.Log(reader.GetString(1) + "-" + reader.GetString(5)); */
+							SoruPaneli.text = reader.GetString (1);
+							Asıkkı.text =reader.GetString(2);
+							Bsıkkı.text = reader.GetString (3);
+							Csıkkı.text = reader.GetString (4);
+
+						}
+						reader.Close();
+					}
+				}
+				dbConnection.Close ();
+
+			}
 		}
 
 		if (col.gameObject.tag=="s12") 
@@ -193,7 +570,36 @@ public class SoruGelme : MonoBehaviour {
 			s12b.gameObject.SetActive (true);
 			s12c.gameObject.SetActive (true);
 			panel.gameObject.SetActive (true);
-			Destroy (ks12);
+			ks12.gameObject.SetActive (false); /* gizlendi */
+			using (IDbConnection dbConnection = new SqliteConnection (connectionString)) 
+			{
+				dbConnection.Open();
+				Debug.Log("bağlantı kuruldu");
+				using (IDbCommand dbCmd = dbConnection.CreateCommand())
+				{
+					string sqlQuery = "SELECT * FROM EgitimLabirenti where Soruid=12";
+
+					dbCmd.CommandText = sqlQuery;
+
+					using (IDataReader reader = dbCmd.ExecuteReader())
+					{
+						Debug.Log("veriler okunuyor");
+						while (reader.Read())
+						{
+							Debug.Log("Veriler okundu");
+							/* Debug.Log(reader.GetString(1) + "-" + reader.GetString(5)); */
+							SoruPaneli.text = reader.GetString (1);
+							Asıkkı.text =reader.GetString(2);
+							Bsıkkı.text = reader.GetString (3);
+							Csıkkı.text = reader.GetString (4);
+
+						}
+						reader.Close();
+					}
+				}
+				dbConnection.Close ();
+
+			}
 		}
 
 		if (col.gameObject.tag=="s13") 
@@ -202,7 +608,37 @@ public class SoruGelme : MonoBehaviour {
 			s13b.gameObject.SetActive (true);
 			s13c.gameObject.SetActive (true);
 			panel.gameObject.SetActive (true);
-			Destroy (ks13);
+			ks13.gameObject.SetActive (false); /* gizlendi */
+
+			using (IDbConnection dbConnection = new SqliteConnection (connectionString)) 
+			{
+				dbConnection.Open();
+				Debug.Log("bağlantı kuruldu");
+				using (IDbCommand dbCmd = dbConnection.CreateCommand())
+				{
+					string sqlQuery = "SELECT * FROM EgitimLabirenti where Soruid=13";
+
+					dbCmd.CommandText = sqlQuery;
+
+					using (IDataReader reader = dbCmd.ExecuteReader())
+					{
+						Debug.Log("veriler okunuyor");
+						while (reader.Read())
+						{
+							Debug.Log("Veriler okundu");
+							/* Debug.Log(reader.GetString(1) + "-" + reader.GetString(5)); */
+							SoruPaneli.text = reader.GetString (1);
+							Asıkkı.text =reader.GetString(2);
+							Bsıkkı.text = reader.GetString (3);
+							Csıkkı.text = reader.GetString (4);
+
+						}
+						reader.Close();
+					}
+				}
+				dbConnection.Close ();
+
+			}
 		}
 
 		if (col.gameObject.tag=="s14") 
@@ -211,7 +647,37 @@ public class SoruGelme : MonoBehaviour {
 			s14b.gameObject.SetActive (true);
 			s14c.gameObject.SetActive (true);
 			panel.gameObject.SetActive (true);
-			Destroy (ks14);
+			ks14.gameObject.SetActive (false); /* gizlendi */
+
+			using (IDbConnection dbConnection = new SqliteConnection (connectionString)) 
+			{
+				dbConnection.Open();
+				Debug.Log("bağlantı kuruldu");
+				using (IDbCommand dbCmd = dbConnection.CreateCommand())
+				{
+					string sqlQuery = "SELECT * FROM EgitimLabirenti where Soruid=14";
+
+					dbCmd.CommandText = sqlQuery;
+
+					using (IDataReader reader = dbCmd.ExecuteReader())
+					{
+						Debug.Log("veriler okunuyor");
+						while (reader.Read())
+						{
+							Debug.Log("Veriler okundu");
+							/* Debug.Log(reader.GetString(1) + "-" + reader.GetString(5)); */
+							SoruPaneli.text = reader.GetString (1);
+							Asıkkı.text =reader.GetString(2);
+							Bsıkkı.text = reader.GetString (3);
+							Csıkkı.text = reader.GetString (4);
+
+						}
+						reader.Close();
+					}
+				}
+				dbConnection.Close ();
+
+			}
 		}
 
 		if (col.gameObject.tag=="s15") 
@@ -220,7 +686,37 @@ public class SoruGelme : MonoBehaviour {
 			s15b.gameObject.SetActive (true);
 			s15c.gameObject.SetActive (true);
 			panel.gameObject.SetActive (true);
-			Destroy (ks15);
+			ks15.gameObject.SetActive (false); /* gizlendi */
+
+			using (IDbConnection dbConnection = new SqliteConnection (connectionString)) 
+			{
+				dbConnection.Open();
+				Debug.Log("bağlantı kuruldu");
+				using (IDbCommand dbCmd = dbConnection.CreateCommand())
+				{
+					string sqlQuery = "SELECT * FROM EgitimLabirenti where Soruid=15";
+
+					dbCmd.CommandText = sqlQuery;
+
+					using (IDataReader reader = dbCmd.ExecuteReader())
+					{
+						Debug.Log("veriler okunuyor");
+						while (reader.Read())
+						{
+							Debug.Log("Veriler okundu");
+							/* Debug.Log(reader.GetString(1) + "-" + reader.GetString(5)); */
+							SoruPaneli.text = reader.GetString (1);
+							Asıkkı.text =reader.GetString(2);
+							Bsıkkı.text = reader.GetString (3);
+							Csıkkı.text = reader.GetString (4);
+
+						}
+						reader.Close();
+					}
+				}
+				dbConnection.Close ();
+
+			}
 		}
 
 		if (col.gameObject.tag=="s16") 
@@ -229,7 +725,37 @@ public class SoruGelme : MonoBehaviour {
 			s16b.gameObject.SetActive (true);
 			s16c.gameObject.SetActive (true);
 			panel.gameObject.SetActive (true);
-			Destroy (ks16);
+			ks16.gameObject.SetActive (false); /* gizlendi */
+
+			using (IDbConnection dbConnection = new SqliteConnection (connectionString)) 
+			{
+				dbConnection.Open();
+				Debug.Log("bağlantı kuruldu");
+				using (IDbCommand dbCmd = dbConnection.CreateCommand())
+				{
+					string sqlQuery = "SELECT * FROM EgitimLabirenti where Soruid=16";
+
+					dbCmd.CommandText = sqlQuery;
+
+					using (IDataReader reader = dbCmd.ExecuteReader())
+					{
+						Debug.Log("veriler okunuyor");
+						while (reader.Read())
+						{
+							Debug.Log("Veriler okundu");
+							/* Debug.Log(reader.GetString(1) + "-" + reader.GetString(5)); */
+							SoruPaneli.text = reader.GetString (1);
+							Asıkkı.text =reader.GetString(2);
+							Bsıkkı.text = reader.GetString (3);
+							Csıkkı.text = reader.GetString (4);
+
+						}
+						reader.Close();
+					}
+				}
+				dbConnection.Close ();
+
+			}
 		}
 
 		if (col.gameObject.tag=="s17") 
@@ -238,7 +764,37 @@ public class SoruGelme : MonoBehaviour {
 			s17b.gameObject.SetActive (true);
 			s17c.gameObject.SetActive (true);
 			panel.gameObject.SetActive (true);
-			Destroy (ks17);
+			ks17.gameObject.SetActive (false); /* gizlendi */
+
+			using (IDbConnection dbConnection = new SqliteConnection (connectionString)) 
+			{
+				dbConnection.Open();
+				Debug.Log("bağlantı kuruldu");
+				using (IDbCommand dbCmd = dbConnection.CreateCommand())
+				{
+					string sqlQuery = "SELECT * FROM EgitimLabirenti where Soruid=17";
+
+					dbCmd.CommandText = sqlQuery;
+
+					using (IDataReader reader = dbCmd.ExecuteReader())
+					{
+						Debug.Log("veriler okunuyor");
+						while (reader.Read())
+						{
+							Debug.Log("Veriler okundu");
+							/* Debug.Log(reader.GetString(1) + "-" + reader.GetString(5)); */
+							SoruPaneli.text = reader.GetString (1);
+							Asıkkı.text =reader.GetString(2);
+							Bsıkkı.text = reader.GetString (3);
+							Csıkkı.text = reader.GetString (4);
+
+						}
+						reader.Close();
+					}
+				}
+				dbConnection.Close ();
+
+			}
 		}
 
 		if (col.gameObject.tag=="s18") 
@@ -247,7 +803,37 @@ public class SoruGelme : MonoBehaviour {
 			s18b.gameObject.SetActive (true);
 			s18c.gameObject.SetActive (true);
 			panel.gameObject.SetActive (true);
-			Destroy (ks18);
+			ks18.gameObject.SetActive (false); /* gizlendi */
+
+			using (IDbConnection dbConnection = new SqliteConnection (connectionString)) 
+			{
+				dbConnection.Open();
+				Debug.Log("bağlantı kuruldu");
+				using (IDbCommand dbCmd = dbConnection.CreateCommand())
+				{
+					string sqlQuery = "SELECT * FROM EgitimLabirenti where Soruid=18";
+
+					dbCmd.CommandText = sqlQuery;
+
+					using (IDataReader reader = dbCmd.ExecuteReader())
+					{
+						Debug.Log("veriler okunuyor");
+						while (reader.Read())
+						{
+							Debug.Log("Veriler okundu");
+							/* Debug.Log(reader.GetString(1) + "-" + reader.GetString(5)); */
+							SoruPaneli.text = reader.GetString (1);
+							Asıkkı.text =reader.GetString(2);
+							Bsıkkı.text = reader.GetString (3);
+							Csıkkı.text = reader.GetString (4);
+
+						}
+						reader.Close();
+					}
+				}
+				dbConnection.Close ();
+
+			}
 		}
 	}
 }
