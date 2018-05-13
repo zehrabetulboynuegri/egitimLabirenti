@@ -11,8 +11,8 @@ public class KarakterHareketi : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		transform.Translate (-Input.GetAxis("Vertical")/20,0,0);
-		transform.Rotate (0,0,Input.GetAxis("Horizontal")*2);
+		transform.Translate (-Input.GetAxis("Vertical")/30,0,0);
+		transform.Rotate (0,0,Input.GetAxis("Horizontal")*3);
 	}
 
 

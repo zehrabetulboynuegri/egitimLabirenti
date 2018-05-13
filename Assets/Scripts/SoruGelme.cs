@@ -10,9 +10,7 @@ using System.Data.SqlClient;
 
 public class SoruGelme : MonoBehaviour 
 {
-	public GameObject model;
-	string[] OyuncuCevap = new string[100];
-	public int i=0;
+	public 	GameObject model;
 	public Text Asıkkı, Bsıkkı, Csıkkı;
 	public Text SoruPaneli;
 	private string connectionString;
@@ -20,6 +18,8 @@ public class SoruGelme : MonoBehaviour
 	public GameObject ks1,ks2,ks3,ks4,ks5,ks6,ks7,ks8,ks9,ks10,ks11,ks12,ks13,ks14,ks15,ks16,ks17,ks18;
 	public GameObject s1a,s1b,s1c,s2a,s2b,s2c,s3a,s3b,s3c,s4a,s4b,s4c,s5a,s5b,s5c,s6a,s6b,s6c,s7a,s7b,s7c,s8a,s8b,s8c,s9a,s9b,s9c,s10a,s10b,s10c,
 	s11a,s11b,s11c,s12a,s12b,s12c,s13a,s13b,s13c,s14a,s14b,s14c,s15a,s15b,s15c,s16a,s16b,s16c,s17a,s17b,s17c,s18a,s18b,s18c;
+	public GameObject s6ax,s6bx,s8ax,s8bx,s8cx,s7bx,s5ax,s5cx,s1bx,s2cx,s4cx,s4bx,s4ax,s3ax,s3bx,s11bx,s11cx,s10ax,s9bx,s12ax,s12bx,s13ax,s13cx,s14ax,s14bx,s15ax,
+	s16ax, s18ax, s18bx, s17ax, s17cx, s18cx, s16cx, s3cx;
 
 	// Use this for initialization
 	public void Start () 
@@ -33,45 +33,10 @@ public class SoruGelme : MonoBehaviour
 	void Update () {
 		
 	}
-		
+
+
 	public void panelkapatmaAplaneaçma()
 	{
-		
-		OyuncuCevap[i]= Asıkkı.text;
-		Debug.Log (OyuncuCevap [i]);
-		i++;
-
-		using (IDbConnection dbConnection = new SqliteConnection (connectionString)) 
-		{
-			dbConnection.Open();
-			Debug.Log("bağlantı kuruldu");
-			using (IDbCommand dbCmd = dbConnection.CreateCommand())
-			{
-				string sqlQuery = "SELECT * FROM EgitimLabirenti where Soruid=1";
-
-				dbCmd.CommandText = sqlQuery;
-
-				using (IDataReader reader = dbCmd.ExecuteReader())
-				{
-					Debug.Log("veriler okunuyor");
-					while (reader.Read())
-					{
-						Debug.Log("Veriler okundu");
-						/* Debug.Log(reader.GetString(1) + "-" + reader.GetString(5)); */
-						SoruPaneli.text = reader.GetString (1);
-						Asıkkı.text =reader.GetString(2);
-						Bsıkkı.text = reader.GetString (3);
-						Csıkkı.text = reader.GetString (4);
-
-					}
-					reader.Close();
-				}
-			}
-			dbConnection.Close ();
-
-		}
-
-
 		panel.gameObject.SetActive (false);
 		s1a.gameObject.SetActive (false);
 		s2a.gameObject.SetActive (false);
@@ -95,10 +60,6 @@ public class SoruGelme : MonoBehaviour
 
 	public void panelkapatmaBplaneaçma()
 	{	
-		OyuncuCevap[i]= Bsıkkı.text;
-		Debug.Log (OyuncuCevap [i]);
-		i++;
-
 		panel.gameObject.SetActive (false);
 		s1b.gameObject.SetActive (false);
 		s2b.gameObject.SetActive (false);
@@ -122,9 +83,6 @@ public class SoruGelme : MonoBehaviour
 
 	public void panelkapatmaCplaneaçma()
 	{
-		OyuncuCevap[i]= Csıkkı.text;
-		Debug.Log (OyuncuCevap [i]);
-		i++;
 		panel.gameObject.SetActive (false);
 		s1c.gameObject.SetActive (false);
 		s2c.gameObject.SetActive (false);
@@ -146,8 +104,62 @@ public class SoruGelme : MonoBehaviour
 		s18c.gameObject.SetActive (false);
 	}
 
-	void OnCollisionEnter(Collision col) /*küpe değerse */
+	void OnCollisionEnter(Collision col) /* küpe değerse */
 	{
+		if (col.gameObject.tag=="hedef")
+		{
+			ks1.gameObject.SetActive (true);
+			transform.localPosition = new Vector3 (69.78f,41.8f,7.4f);
+		}
+
+		if (col.gameObject.tag=="hedef1")
+		{
+			ks5.gameObject.SetActive (true);
+			transform.localPosition = new Vector3 (69.78f,41.8f,7.4f);
+		}
+
+		if (col.gameObject.tag=="hedef2")
+		{
+			ks6.gameObject.SetActive (true);
+			transform.localPosition = new Vector3 (69.78f,41.8f,7.4f);
+		}
+
+		if (col.gameObject.tag=="hedef3")
+		{
+			ks7.gameObject.SetActive (true);
+			transform.localPosition = new Vector3 (69.78f,41.8f,7.4f);
+		}
+
+		if (col.gameObject.tag=="hedef4")
+		{
+			ks9.gameObject.SetActive (true);
+			transform.localPosition = new Vector3 (69.78f,41.8f,7.4f);
+		}
+
+		if (col.gameObject.tag=="hedef5")
+		{
+			ks12.gameObject.SetActive (true);
+			transform.localPosition = new Vector3 (69.78f,41.8f,7.4f);
+		}
+
+		if (col.gameObject.tag=="hedef6")
+		{
+			ks13.gameObject.SetActive (true);
+			transform.localPosition = new Vector3 (69.78f,41.8f,7.4f);
+		}
+
+		if (col.gameObject.tag=="hedef7")
+		{
+			ks14.gameObject.SetActive (true);
+			transform.localPosition = new Vector3 (69.78f,41.8f,7.4f);
+		}
+
+		if (col.gameObject.tag=="hedef8")
+		{
+			ks15.gameObject.SetActive (true);
+			transform.localPosition = new Vector3 (69.78f,41.8f,7.4f);
+		}
+
 		if (col.gameObject.tag=="s1") 
 		{
 			panel.gameObject.SetActive (true);
